@@ -1,0 +1,32 @@
+# Ignore everything by default
+*
+
+# But track the main directory and its contents
+!main/
+!main/**
+
+# Also track these important files
+!.gitignore
+!CMakeLists.txt
+!README*.md
+!partitions.csv
+!sdkconfig.defaults*
+
+# Ignore build artifacts even in main/
+main/build/
+main/*.o
+main/*.a
+
+# Ignore IDE and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Ignore ESP-IDF build directory
+build/
+dependencies.lock
+managed_components/
