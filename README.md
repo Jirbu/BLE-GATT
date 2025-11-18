@@ -1,35 +1,34 @@
-# WiFi BLE Provisioning Component
+# WiFi BLE Provisioning - Simple Integration
 
-ESP-IDF komponenta pro přidání BLE provisioning do existujícího projektu.
+Přidejte BLE provisioning do vašeho projektu pomocí 2 souborů.
 
-## 📦 Obsah
+## 📦 Co zkopírovat
 
 ```
-components/wifi_prov_ble/    ← Zkopírujte celou tuto složku do vašeho projektu
-├── CMakeLists.txt
-├── README.md                ← Detailní dokumentace
-├── include/
-│   └── wifi_prov_ble.h
-└── wifi_prov_ble.c
+main/
+├── wifi_prov_ble.c          ← ZKOPÍROVAT
+├── wifi_prov_ble.h          ← ZKOPÍROVAT
+└── README_COPY_THIS.md      ← Návod (nemusíte kopírovat)
 ```
 
-**To je vše! Pouze 4 soubory.**
+**Jen tyto 2 soubory!** Zkopírujte je do vaší `main/` složky.
 
-## 🚀 Použití v cílovém projektu
+## 🚀 Použití
 
-### 1. Zkopírovat komponentu
+### 1. Zkopírovat soubory
 
 ```bash
-cp -r components/wifi_prov_ble /path/to/your/project/components/
+cp main/wifi_prov_ble.c /path/to/your/project/main/
+cp main/wifi_prov_ble.h /path/to/your/project/main/
 ```
 
 ### 2. Přidat do vašeho main/CMakeLists.txt
 
 ```cmake
 idf_component_register(
-    SRCS "main.c"
+    SRCS "main.c" "wifi_prov_ble.c"    # ← Přidat wifi_prov_ble.c
     INCLUDE_DIRS "."
-    REQUIRES wifi_prov_ble  # ← Přidat
+    REQUIRES wifi_provisioning protocomm protobuf-c bt esp_wifi
 )
 ```
 
@@ -39,14 +38,13 @@ idf_component_register(
 #include "wifi_prov_ble.h"
 
 void app_main(void) {
-    // Vaše existující inicializace...
+    // Vaše existující inicializace
     init_nvs();
     init_wifi();
-    start_softap_provisioning();  // Vaše SoftAP
+    start_softap_provisioning();  // Vaše SoftAP (pokud máte)
     
     // Přidat BLE (1 řádek!)
-    wifi_prov_ble_config_t cfg = WIFI_PROV_BLE_CONFIG_DEFAULT();
-    wifi_prov_ble_start(&cfg);
+    wifi_prov_ble_start("abcd1234", NULL);
     
     // Nyní běží SoftAP + BLE současně!
 }
@@ -54,17 +52,30 @@ void app_main(void) {
 
 ## 📖 Dokumentace
 
-Kompletní dokumentace: `components/wifi_prov_ble/README.md`
+Detailní návod: `main/README_COPY_THIS.md`
 
 ## 🎯 Co to dělá
 
-- ✅ Přidává BLE transport k existujícímu provisioning
+- ✅ Přidává BLE provisioning k existujícímu projektu
 - ✅ Funguje souběžně s SoftAP
-- ✅ Čisté API: `start()`, `stop()`, `is_active()`
-- ❌ NEOBSAHUJE kompletní aplikaci
-- ❌ NEINICIALIZUJE WiFi (předpokládá že už máte)
-- ❌ Není to hotová aplikace - jen komponenta!
+- ✅ Jednoduché API: `wifi_prov_ble_start()`, `wifi_prov_ble_stop()`
+- ✅ Jen 2 soubory na zkopírování
+- ❌ NEINICIALIZUJE WiFi (musíte mít hotové)
+
+## 📂 Struktura projektu
+
+```
+main/
+├── wifi_prov_ble.c          ← Zkopírovat do vašeho projektu
+├── wifi_prov_ble.h          ← Zkopírovat do vašeho projektu
+└── README_COPY_THIS.md      ← Detailní návod
+
+Ostatní soubory v main/:
+├── wifi_prov_demo.c         ← Demo aplikace (NEKOPÍROVAT)
+├── example_*.c              ← Příklady (NEKOPÍROVAT)
+└── ...                      ← Ostatní (NEKOPÍROVAT)
+```
 
 ## 📄 Licence
 
-Unlicense / CC0-1.0
+Unlicense / CC0-1.0 - Použijte jak chcete!

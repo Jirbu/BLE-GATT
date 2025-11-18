@@ -1,18 +1,13 @@
 # Ignore everything by default
 *
 
-# Track the component directory
-!components/
-!components/wifi_prov_ble/
-!components/wifi_prov_ble/**
-
-# Track simple copy-paste files in main/
+# Track only the files to copy
 !main/
 !main/wifi_prov_ble.c
 !main/wifi_prov_ble.h
 !main/README_COPY_THIS.md
 
-# Also track these important files
+# Track documentation
 !.gitignore
 !README.md
 
