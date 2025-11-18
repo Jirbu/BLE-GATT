@@ -1,49 +1,70 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-S3 |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- |
+# WiFi BLE Provisioning Component
 
-# ESP-IDF Gatt Server Service Table Example
+ESP-IDF komponenta pro přidání BLE provisioning do existujícího projektu.
 
-This example shows how to create a GATT service with an attribute table defined in one place. Provided API releases the user from adding attributes one by one as implemented in BLUEDROID. A demo of the other method to create the attribute table is presented in [gatt_server_demo](../gatt_server).
+## 📦 Obsah
 
-Please, check this [tutorial](tutorial/Gatt_Server_Service_Table_Example_Walkthrough.md) for more information about this example.
+```
+components/wifi_prov_ble/    ← Zkopírujte celou tuto složku do vašeho projektu
+├── CMakeLists.txt
+├── README.md                ← Detailní dokumentace
+├── include/
+│   └── wifi_prov_ble.h
+└── wifi_prov_ble.c
+```
 
-## How to Use Example
+**To je vše! Pouze 4 soubory.**
 
-Before project configuration and build, be sure to set the correct chip target using:
+## 🚀 Použití v cílovém projektu
+
+### 1. Zkopírovat komponentu
 
 ```bash
-idf.py set-target <chip_name>
+cp -r components/wifi_prov_ble /path/to/your/project/components/
 ```
 
-### Hardware Required
+### 2. Přidat do vašeho main/CMakeLists.txt
 
-* A development board with ESP32/ESP32-C3/ESP32-H2/ESP32-C2/ESP32-S3 SoC (e.g., ESP32-DevKitC, ESP-WROVER-KIT, etc.)
-* A USB cable for Power supply and programming
-
-See [Development Boards](https://www.espressif.com/en/products/devkits) for more information about it.
-
-### Build and Flash
-
-Run `idf.py -p PORT flash monitor` to build, flash and monitor the project.
-
-(To exit the serial monitor, type ``Ctrl-]``.)
-
-See the [Getting Started Guide](https://idf.espressif.com/) for full steps to configure and use ESP-IDF to build projects.
-
-## Example Output
-
-```
-I (0) cpu_start: Starting scheduler on APP CPU.
-I (512) BTDM_INIT: BT controller compile version [1342a48]
-I (522) system_api: Base MAC address is not set
-I (522) system_api: read default base MAC address from EFUSE
-I (522) phy_init: phy_version 4670,719f9f6,Feb 18 2021,17:07:07
-I (942) GATTS_TABLE_DEMO: create attribute table successfully, the number handle = 8
-
-I (942) GATTS_TABLE_DEMO: SERVICE_START_EVT, status 0, service_handle 40
-I (962) GATTS_TABLE_DEMO: advertising start successfully
+```cmake
+idf_component_register(
+    SRCS "main.c"
+    INCLUDE_DIRS "."
+    REQUIRES wifi_prov_ble  # ← Přidat
+)
 ```
 
-## Troubleshooting
+### 3. Použít v kódu
 
-For any technical queries, please open an [issue](https://github.com/espressif/esp-idf/issues) on GitHub. We will get back to you soon.
+```c
+#include "wifi_prov_ble.h"
+
+void app_main(void) {
+    // Vaše existující inicializace...
+    init_nvs();
+    init_wifi();
+    start_softap_provisioning();  // Vaše SoftAP
+    
+    // Přidat BLE (1 řádek!)
+    wifi_prov_ble_config_t cfg = WIFI_PROV_BLE_CONFIG_DEFAULT();
+    wifi_prov_ble_start(&cfg);
+    
+    // Nyní běží SoftAP + BLE současně!
+}
+```
+
+## 📖 Dokumentace
+
+Kompletní dokumentace: `components/wifi_prov_ble/README.md`
+
+## 🎯 Co to dělá
+
+- ✅ Přidává BLE transport k existujícímu provisioning
+- ✅ Funguje souběžně s SoftAP
+- ✅ Čisté API: `start()`, `stop()`, `is_active()`
+- ❌ NEOBSAHUJE kompletní aplikaci
+- ❌ NEINICIALIZUJE WiFi (předpokládá že už máte)
+- ❌ Není to hotová aplikace - jen komponenta!
+
+## 📄 Licence
+
+Unlicense / CC0-1.0

@@ -1,16 +1,14 @@
 # Ignore everything by default
 *
 
-# But track the main directory and its contents
-!main/
-!main/**
+# Track the component directory
+!components/
+!components/wifi_prov_ble/
+!components/wifi_prov_ble/**
 
 # Also track these important files
 !.gitignore
-!CMakeLists.txt
-!README*.md
-!partitions.csv
-!sdkconfig.defaults*
+!README.md
 
 # Ignore build artifacts even in main/
 main/build/
